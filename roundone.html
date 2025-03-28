@@ -1,1 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ArtifactQuest - Round One</title>
+  <link rel="stylesheet" href="styles.css">
+  <!-- Include shared round logic -->
+  <script src="round.js" defer></script>
+</head>
+<body>
+  <header>
+    <h1>ArtifactQuest - Round One</h1>
+  </header>
+  <div id="scoreboard">
+    <p>
+      Round: <span id="round-display">0</span> / 5 | 
+      Score: <span id="score-display">0</span> | 
+      Lives: <span id="lives-display">♥♥</span>
+    </p>
+    <!-- Timer display (only used if Time Limit mode is chosen) -->
+    <p id="timer-display" style="font-size:1.2rem; color:red;"></p>
+  </div>
+  <div id="loading">Loading...</div>
+  <main id="main-content" style="display:none;">
+    <div id="artifact-container">
+      <img id="artifact-image" src="" alt="Artifact Image">
+    </div>
+    <section id="choice-container">
+      <p>What is this object?</p>
+      <div id="choices"></div>
+    </section>
+    <section id="time-container">
+      <p>When was it used? <span id="year-display"></span></p>
+      <div class="slider-container">
+        <input type="range" id="year-slider" min="1500" max="2020" step="1">
+        <div id="slider-ticks">
+          <span class="tick" style="left: 0%;">1500</span>
+          <span class="tick" style="left: 19.23%;">1600</span>
+          <span class="tick" style="left: 38.46%;">1700</span>
+          <span class="tick" style="left: 57.69%;">1800</span>
+          <span class="tick" style="left: 76.92%;">1900</span>
+          <span class="tick" style="left: 96.15%;">2000</span>
+          <span class="tick" style="left: 100%;">2020</span>
+        </div>
+      </div>
+    </section>
+    <button id="submit-btn">Submit Answer</button>
+    <div id="feedback"></div>
+  </main>
+  <footer>
+    <p>
+      Have an artifact to share?
+      <a href="https://forms.gle/5GSUK1LLGWkr7fjZA" target="_blank">Submit it here</a>
+    </p>
+  </footer>
+</body>
+</html>
 
