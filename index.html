@@ -11,7 +11,7 @@
     <h1>ArtifactQuest</h1>
   </header>
   
-  <main>
+  <main id="main-content">
     <!-- Zoomable Artifact Image Display -->
     <div id="artifact-container">
       <img id="artifact-image" src="" alt="Artifact Image">
@@ -26,7 +26,16 @@
     <!-- "When" Slider Section -->
     <section id="time-container">
       <p>When was it used? <span id="year-display"></span></p>
-      <input type="range" id="year-slider" min="1900" max="2020" step="1">
+      <input type="range" id="year-slider" min="1500" max="2020" step="1" list="tickmarks">
+      <datalist id="tickmarks">
+        <option value="1500" label="1500"></option>
+        <option value="1600" label="1600"></option>
+        <option value="1700" label="1700"></option>
+        <option value="1800" label="1800"></option>
+        <option value="1900" label="1900"></option>
+        <option value="2000" label="2000"></option>
+        <option value="2020" label="2020"></option>
+      </datalist>
     </section>
     
     <!-- Submit Button -->
@@ -39,13 +48,12 @@
   <!-- Community Submission Link -->
   <footer>
     <p>
-      Have an artifact to share?
+      Have an artifact to share? 
       <!-- Replace the URL below with your actual Google Forms link -->
-      <a href="https://forms.gle/W14xvwJX7CaBbPLy5" target="_blank">Submit it here</a>
+      <a href="https://forms.gle/W14xvwJX7CaBbPLy5">Submit it here</a>
     </p>
   </footer>
   
   <script src="script.js"></script>
 </body>
 </html>
-
