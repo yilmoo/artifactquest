@@ -11,17 +11,12 @@
       const timeLimitRadio = document.getElementById('timeLimit');
       const timeLimitContainer = document.getElementById('time-limit-container');
       noTimerRadio.addEventListener('change', function() {
-        if (this.checked) {
-          timeLimitContainer.style.display = 'none';
-        }
+        if (this.checked) { timeLimitContainer.style.display = 'none'; }
       });
       timeLimitRadio.addEventListener('change', function() {
-        if (this.checked) {
-          timeLimitContainer.style.display = 'block';
-        }
+        if (this.checked) { timeLimitContainer.style.display = 'block'; }
       });
     });
-
     function startGame() {
       const timerOption = document.querySelector('input[name="timer"]:checked').value;
       localStorage.setItem("timerOption", timerOption);
@@ -35,7 +30,7 @@
       localStorage.setItem("score", "0");
       localStorage.setItem("roundCount", "0");
       localStorage.setItem("usedQuestions", JSON.stringify([]));
-      // Navigate to first round page
+      // Navigate to Round One
       window.location.href = "roundone.html?referrer=true";
     }
   </script>
@@ -56,8 +51,8 @@
     </div>
     <div id="time-limit-container" style="display: none;">
       <label for="time-slider">Select Time Limit (seconds):</label>
-      <input type="range" id="time-slider" min="30" max="90" value="90" step="10" oninput="document.getElementById('time-display').innerText = this.value;">
-      <span id="time-display">90</span> seconds
+      <input type="range" id="time-slider" min="30" max="90" value="60" step="5" oninput="document.getElementById('time-display').innerText = this.value;">
+      <span id="time-display">60</span> seconds
     </div>
     <button onclick="startGame()">Start Game</button>
   </div>
@@ -69,4 +64,3 @@
   </footer>
 </body>
 </html>
-
