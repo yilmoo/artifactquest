@@ -1,1 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ArtifactQuest - Final Score</title>
+  <link rel="stylesheet" href="styles.css">
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      // Retrieve final score data from localStorage
+      const score = localStorage.getItem("score") || 0;
+      const rounds = localStorage.getItem("roundCount") || 0;
+      document.getElementById("final-score").innerText = score;
+      document.getElementById("final-rounds").innerText = rounds;
+    });
+    function playAgain() {
+      // Reset game state and navigate back to the home page
+      localStorage.setItem("score", "0");
+      localStorage.setItem("roundCount", "0");
+      localStorage.setItem("usedQuestions", JSON.stringify([]));
+      window.location.href = "index.html";
+    }
+  </script>
+</head>
+<body>
+  <header>
+    <h1>Final Score</h1>
+  </header>
+  <div id="final-score-content">
+    <p>Your final score: <span id="final-score">0</span></p>
+    <p>Rounds completed: <span id="final-rounds">0</span></p>
+    <button onclick="playAgain()">Play Again</button>
+  </div>
+  <footer>
+    <p>
+      Have an artifact to share?
+      <a href="https://forms.gle/5GSUK1LLGWkr7fjZA" target="_blank">Submit it here</a>
+    </p>
+  </footer>
+</body>
+</html>
 
