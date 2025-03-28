@@ -1,22 +1,56 @@
-// Global variables for artifact data and user selections
+// ================== Home Screen & Volume Control Setup ==================
+
+// Switch from Home to Game screen when Play button is clicked
+document.getElementById('play-button').addEventListener('click', function () {
+  document.getElementById('home-screen').style.display = 'none';
+  document.getElementById('game-screen').style.display = 'block';
+});
+
+// Volume Control Setup: Initialize background music and controls
+const music = document.getElementById('background-music');
+music.volume = 1; // initial volume 100%
+
+const volumeButton = document.getElementById('volume-button');
+const volumeSlider = document.getElementById('volume-slider');
+
+function updateVolume() {
+  let vol = volumeSlider.value / 100; // percentage to decimal
+  music.volume = vol;
+  if (vol == 0) {
+    volumeButton.innerText = "🔇";
+  } else {
+    volumeButton.innerText = "🔊";
+  }
+}
+
+volumeSlider.addEventListener('input', updateVolume);
+
+volumeButton.addEventListener('click', function () {
+  if (music.muted) {
+    music.muted = false;
+    volumeButton.innerText = "🔊";
+    updateVolume();
+  } else {
+    music.muted = true;
+    volumeButton.innerText = "🔇";
+  }
+});
+
+// ================== Main Game Logic ==================
+
+// Global data & session variables
 let artifacts = [];
 let currentArtifact = null;
 let selectedAnswer = null;
 
-// Score, round, lives, and used questions tracking
 let roundCount = 0;
 let score = 0;
 let lives = 2;
-let usedQuestions = [];
+let usedQuestions = [];  // persists across sessions within the visit
 
-// Zoom settings for the artifact image
 let scale = 1;
 const MIN_SCALE = 1;
 const MAX_SCALE = 3;
-
-// Volume control: initialize background music element
-const music = document.getElementById('background-music');
-music.volume = 1; // Volume initially 100%
 
 // Utility: Fisher-Yates Shuffle
 function shuffle(array) {
@@ -27,7 +61,7 @@ function shuffle(array) {
   return array;
 }
 
-// Update Scoreboard Display, including lives shown as ♥
+// Update scoreboard including lives display
 function updateScoreboard() {
   document.getElementById('round-display').innerText = roundCount;
   document.getElementById('score-display').innerText = score;
@@ -50,8 +84,7 @@ fetch('data.json')
 
 // Load and display a new artifact, avoiding repeats if possible
 function loadNewArtifact() {
-  // Reset lives for new question; do not reset usedQuestions between sessions
-  lives = 2;
+  lives = 2;  // reset lives for new question
   updateScoreboard();
 
   let availableIndices = [];
@@ -61,7 +94,6 @@ function loadNewArtifact() {
     }
   }
   if (availableIndices.length === 0) {
-    // If entire bank used, clear only then
     usedQuestions = [];
     availableIndices = artifacts.map((_, i) => i);
   }
@@ -74,7 +106,7 @@ function loadNewArtifact() {
   artifactImage.src = currentArtifact.imageURL;
   artifactImage.alt = currentArtifact.correctAnswer;
 
-  // Generate multiple-choice options (shuffled)
+  // Generate MC options (shuffled)
   const options = shuffle([currentArtifact.correctAnswer, ...currentArtifact.distractors]);
   const choicesDiv = document.getElementById('choices');
   choicesDiv.innerHTML = '';
@@ -92,20 +124,19 @@ function loadNewArtifact() {
   slider.value = slider.min;
   slider.classList.remove('slider-active', 'slider-correct', 'slider-incorrect');
   document.getElementById('year-display').innerText = slider.value;
-  
-  // Clear previous selection and feedback
+
   selectedAnswer = null;
   document.getElementById('feedback').innerText = '';
   updateScoreboard();
 }
 
-// Update slider display as it moves; add active border
+// Update slider live with active border styling
 document.getElementById('year-slider').addEventListener('input', function () {
   document.getElementById('year-display').innerText = this.value;
   this.classList.add('slider-active');
 });
 
-// Record selected answer and highlight with purple border
+// Record the user's selected answer and indicate selection with purple outline
 function selectAnswer(buttonElement) {
   selectedAnswer = buttonElement.innerText;
   const buttons = document.querySelectorAll('#choices button');
@@ -145,8 +176,8 @@ document.getElementById('submit-btn').addEventListener('click', function () {
   const objectIsCorrect = (selectedAnswer === currentArtifact.correctAnswer);
   const isPerfect = objectIsCorrect && isYearCorrect;
   
-  // First submission: if not perfect and lives > 1, give partial feedback:
-  // Indicate if the object is correct and if the year guess is correct (but do not reveal correct year/delta)
+  // On first submission (if not perfect and lives > 1), provide partial feedback:
+  // Tell the user which part(s) are correct (object and/or year), without revealing correct year/delta details.
   if (!isPerfect && lives > 1) {
     lives--;
     updateScoreboard();
@@ -163,7 +194,6 @@ document.getElementById('submit-btn').addEventListener('click', function () {
     }
     interimFeedback += '<br><strong>Please try again. Lives remaining: ' + "♥".repeat(lives) + '</strong>';
     
-    // Update slider border based on current year guess
     const sliderEl = document.getElementById('year-slider');
     sliderEl.classList.remove('slider-active');
     if (isYearCorrect) {
@@ -176,10 +206,10 @@ document.getElementById('submit-btn').addEventListener('click', function () {
     return;
   }
   
-  // Final submission: disable further submissions
+  // Final submission: disable further submissions.
   document.getElementById('submit-btn').disabled = true;
   
-  // Update MC buttons: mark correct answer green and selected if wrong in red
+  // Finalize multiple-choice styling: mark correct answer green and wrong selection red.
   const buttons = document.querySelectorAll('#choices button');
   buttons.forEach(btn => {
     if (btn.innerText === currentArtifact.correctAnswer) {
@@ -191,7 +221,6 @@ document.getElementById('submit-btn').addEventListener('click', function () {
     }
   });
   
-  // Final slider styling
   const sliderEl = document.getElementById('year-slider');
   sliderEl.classList.remove('slider-active');
   if (isYearCorrect) {
@@ -201,7 +230,7 @@ document.getElementById('submit-btn').addEventListener('click', function () {
   }
   
   // Scoring Calculation:
-  // If object is correct, award 3 points and if so, compute yearPoints = max(0, 2 - 0.5 * yearDiff), rounded to 1 decimal.
+  // If the object is correct, award 3 points, and if so, add year points equal to max(0, 2 - 0.5 * yearDiff) (rounded to one decimal).
   let questionScore = 0;
   if (objectIsCorrect) {
     questionScore += 3;
@@ -214,7 +243,7 @@ document.getElementById('submit-btn').addEventListener('click', function () {
   roundCount++;
   updateScoreboard();
   
-  // Build full detailed feedback message
+  // Build full detailed feedback message for final submission.
   let feedbackText = "";
   if (objectIsCorrect) {
     feedbackText += '<span class="feedback-object" style="color:green;">Correct object!</span> ';
@@ -227,14 +256,13 @@ document.getElementById('submit-btn').addEventListener('click', function () {
     feedbackText += '<span class="feedback-year">Correct Year Range: ' + currentArtifact.correctYear[0] + ' - ' + currentArtifact.correctYear[1] + '.</span> ';
   }
   if (isYearCorrect) {
-    feedbackText += '<span class="feedback-year">Your year guess is correct.</span> ';
+    feedbackText += '<span class="feedback-year" style="color:green;">Your year guess is correct.</span> ';
   } else {
-    // Now reveal details if final submission is incorrect for year:
     feedbackText += '<span class="feedback-year" style="color:red;">Your year guess was incorrect. ';
     if (typeof currentArtifact.correctYear === 'number') {
       feedbackText += 'The correct year is ' + currentArtifact.correctYear;
     } else if (Array.isArray(currentArtifact.correctYear)) {
-      feedbackText += 'The correct year range is from ' + currentArtifact.correctYear[0] + ' to ' + currentArtifact.correctYear[1];
+      feedbackText += 'The correct year range is ' + currentArtifact.correctYear[0] + '–' + currentArtifact.correctYear[1];
     }
     feedbackText += ', and you were off by ' + yearDiff + ' year(s).</span> ';
   }
@@ -243,7 +271,6 @@ document.getElementById('submit-btn').addEventListener('click', function () {
   const feedbackDiv = document.getElementById('feedback');
   feedbackDiv.innerHTML = feedbackText;
   
-  // Apply flash effect on main content
   const mainContent = document.getElementById('main-content');
   if (objectIsCorrect && isYearCorrect) {
     mainContent.classList.add('flash-correct');
@@ -254,7 +281,6 @@ document.getElementById('submit-btn').addEventListener('click', function () {
     mainContent.classList.remove('flash-correct', 'flash-incorrect');
   }, 500);
   
-  // End of question: if 5 rounds complete, show score summary; otherwise, add a "Next Question" button
   if (roundCount >= 5) {
     setTimeout(() => { showScore(); }, 500);
   } else {
@@ -272,8 +298,7 @@ document.getElementById('submit-btn').addEventListener('click', function () {
   }
 });
 
-// Display score summary after 5 rounds with celebratory styling and a "Play Again" button.
-// Note: Do NOT reset usedQuestions between sessions to avoid repeats.
+// Display full score summary after 5 rounds with celebratory styling and a "Play Again" option.
 function showScore() {
   document.getElementById('main-content').style.display = 'none';
   document.getElementById('scoreboard').style.display = 'none';
@@ -286,7 +311,7 @@ function showScore() {
     <button id="play-again">Play Again</button>
   `;
   document.getElementById('play-again').onclick = function () {
-    // Do NOT reset usedQuestions between sessions so that repeats are avoided as much as possible.
+    // Do not reset usedQuestions to minimize repeats across sessions.
     roundCount = 0;
     score = 0;
     updateScoreboard();
@@ -298,7 +323,7 @@ function showScore() {
   };
 }
 
-// --- Image Zoom Functionality ---
+// Image Zoom Functionality
 document.getElementById('artifact-container').addEventListener('wheel', function(e) {
   e.preventDefault();
   const img = document.getElementById('artifact-image');
@@ -308,39 +333,4 @@ document.getElementById('artifact-container').addEventListener('wheel', function
   const originX = (offsetX / rect.width) * 100;
   const originY = (offsetY / rect.height) * 100;
   img.style.transformOrigin = `${originX}% ${originY}%`;
-  if (e.deltaY < 0) {
-    scale = Math.min(scale + 0.1, MAX_SCALE);
-  } else {
-    scale = Math.max(scale - 0.1, MIN_SCALE);
-  }
-  img.style.transform = `scale(${scale})`;
-});
-
-// --- Volume Control Functionality ---
-const volumeButton = document.getElementById('volume-button');
-const volumeSlider = document.getElementById('volume-slider');
-
-function updateVolume() {
-  const vol = volumeSlider.value / 100; // convert percentage to decimal
-  music.volume = vol;
-  if (vol === 0) {
-    volumeButton.innerText = "🔇";
-  } else {
-    volumeButton.innerText = "🔊";
-  }
-}
-
-// When the volume slider changes, update the music volume
-volumeSlider.addEventListener('input', updateVolume);
-
-// Toggle mute when volume button is clicked
-volumeButton.addEventListener('click', function() {
-  if (music.muted) {
-    music.muted = false;
-    volumeButton.innerText = "🔊";
-    updateVolume(); // update volume from slider
-  } else {
-    music.muted = true;
-    volumeButton.innerText = "🔇";
-  }
-});
+  if (e.deltaY
