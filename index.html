@@ -7,15 +7,15 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <!-- Home / Landing Page -->
+  <!-- Home/Landing Page -->
   <div id="home-screen">
-    <header>
+    <header class="home-header">
       <h1>Welcome to ArtifactQuest!</h1>
     </header>
     <div id="home-content">
       <p>
         Select the correct object and adjust the slider to guess the right time period.<br>
-        You have <strong>2 lives</strong> per question – on your first try you'll learn which parts (object and/or year) are correct (without full details), and on your final attempt the complete feedback will be displayed.<br>
+        You have <strong>2 lives</strong> per question – on your first try you'll learn which parts (object and/or year) are correct (without full details), and on your final attempt complete feedback will be provided.<br>
         Complete 5 rounds for your final score. Good luck!
       </p>
       <button id="play-button">Play</button>
@@ -36,16 +36,14 @@
     
     <div id="instructions">
       <p>
-        You have <strong>2 lives</strong> per question. Your first submission will indicate which parts (object and/or year) are correct without full details. On your final try, you'll see complete feedback (including a message in red if your year guess was incorrect).<br>
+        You have <strong>2 lives</strong> per question. Your first submission will show which parts (object and/or year) are correct without revealing full details; on your final try, complete feedback (including a red message if your year guess is incorrect) will be provided.<br>
         Complete 5 rounds for your final score.
       </p>
     </div>
     
     <div id="scoreboard">
       <p>
-        Round: <span id="round-display">0</span> / 5
-        | Score: <span id="score-display">0</span>
-        | Lives: <span id="lives-display">♥♥</span>
+        Round: <span id="round-display">0</span> / 5 | Score: <span id="score-display">0</span> | Lives: <span id="lives-display">♥♥</span>
       </p>
     </div>
 
@@ -87,18 +85,18 @@
     <footer>
       <p>
         Have an artifact to share?
-        <a href="https://forms.gle/KP5EiBE2wDdk8L6D6k" target="_blank">Submit it here</a>
+        <a href="https://forms.gle/j1EqvLFed4AKAMzZ7" target="_blank">Submit it here</a>
       </p>
     </footer>
   </div>
 
-  <!-- Volume Control: Speaker Icon that reveals a Volume Slider on Hover -->
+  <!-- Volume Control: Speaker Icon with Hoverable Slider -->
   <div id="volume-control">
     <button id="volume-button">🔊</button>
     <input type="range" id="volume-slider" min="0" max="100" value="100">
   </div>
 
-  <!-- Background Music (ensure background-music.mp3 is in the audio/ folder) -->
+  <!-- Background Music (ensure the file is in the audio/ folder) -->
   <audio id="background-music" autoplay loop>
     <source src="audio/background-music.mp3" type="audio/mpeg">
     Your browser does not support the audio element.
