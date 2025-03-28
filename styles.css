@@ -19,6 +19,29 @@ header h1 {
   margin: 0;
 }
 
+/* Main Content (for flash effect) */
+#main-content {
+  transition: background-color 0.5s;
+}
+
+/* Flash Animations */
+@keyframes flashCorrect {
+  0% { background-color: transparent; }
+  50% { background-color: #b6e1ab; }
+  100% { background-color: transparent; }
+}
+@keyframes flashIncorrect {
+  0% { background-color: transparent; }
+  50% { background-color: #f7b2b2; }
+  100% { background-color: transparent; }
+}
+.flash-correct {
+  animation: flashCorrect 0.5s;
+}
+.flash-incorrect {
+  animation: flashIncorrect 0.5s;
+}
+
 /* Artifact Display */
 #artifact-container {
   margin: 20px auto;
@@ -133,4 +156,3 @@ header h1 {
   font-size: 1.2rem;
   min-height: 40px;
 }
-
