@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>ArtifactQuest - Round One</title>
   <link rel="stylesheet" href="styles.css">
-  <!-- Include shared round logic -->
   <script src="round.js" defer></script>
 </head>
 <body>
@@ -18,11 +17,11 @@
       Score: <span id="score-display">0</span> | 
       Lives: <span id="lives-display">♥♥</span>
     </p>
-    <!-- Timer display (only used if Time Limit mode is chosen) -->
-    <p id="timer-display" style="font-size:1.2rem; color:red;"></p>
+    <!-- Timer display; visible only if Time Limit mode is selected -->
+    <p id="timer-display" style="font-size: 1.2rem; color: red;"></p>
   </div>
   <div id="loading">Loading...</div>
-  <main id="main-content" style="display:none;">
+  <main id="main-content" style="display: none;">
     <div id="artifact-container">
       <img id="artifact-image" src="" alt="Artifact Image">
     </div>
@@ -56,4 +55,3 @@
   </footer>
 </body>
 </html>
-
