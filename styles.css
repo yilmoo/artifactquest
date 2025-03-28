@@ -177,7 +177,7 @@ header h1 {
 }
 #slider-ticks {
   position: absolute;
-  top: 30px; /* Adjust to position tick labels beneath the slider */
+  top: 30px; /* adjust as needed */
   left: 0;
   width: 100%;
 }
@@ -285,7 +285,7 @@ header h1 {
   background-color: #1e8449;
 }
 
-/* Volume Control Styles */
+/* Volume Control Styles: Hoverable Volume Slider */
 #volume-control {
   position: fixed;
   top: 20px;
@@ -306,6 +306,7 @@ header h1 {
 #volume-control button:hover {
   color: #27ae60;
 }
+/* Initially hide the slider; show it only when hovering over the volume-control container */
 #volume-control input[type="range"] {
   width: 100px;
   display: none;
