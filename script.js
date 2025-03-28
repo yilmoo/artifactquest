@@ -1,14 +1,13 @@
 document.addEventListener("DOMContentLoaded", function () {
-  console.debug("DOM fully loaded and parsed.");
-
-  // ================== Home Screen Setup ==================
-  const playButton = document.getElementById('play-button');
+  // SIMPLE PLAY BUTTON ATTACHMENT
+  const playButton = document.getElementById("play-button");
   if (playButton) {
-    playButton.addEventListener('click', function () {
-      console.debug("Play button clicked.");
-      document.getElementById('home-screen').style.display = 'none';
-      document.getElementById('game-screen').style.display = 'block';
-    });
+    playButton.onclick = function () {
+      document.getElementById("home-screen").style.display = "none";
+      document.getElementById("game-screen").style.display = "block";
+      // Optionally, you could log to verify:
+      console.log("Play button clicked: Transitioning to game screen.");
+    };
   } else {
     console.error("Play button not found!");
   }
@@ -35,32 +34,34 @@ document.addEventListener("DOMContentLoaded", function () {
     return array;
   }
 
-  // Update Scoreboard (round, score, lives)
+  // Update scoreboard: show round, score, and lives
   function updateScoreboard() {
-    document.getElementById('round-display').innerText = roundCount;
-    document.getElementById('score-display').innerText = score;
-    document.getElementById('lives-display').innerText = "♥".repeat(lives);
+    document.getElementById("round-display").innerText = roundCount;
+    document.getElementById("score-display").innerText = score;
+    document.getElementById("lives-display").innerText = "♥".repeat(lives);
   }
 
-  // Load JSON from data.json
-  fetch('data.json')
-    .then(response => response.json())
-    .then(data => {
+  // Load JSON data from data.json
+  fetch("data.json")
+    .then((response) => response.json())
+    .then((data) => {
       artifacts = data;
       loadNewArtifact();
-      document.getElementById('loading').style.display = 'none';
-      document.getElementById('main-content').style.display = 'block';
+      document.getElementById("loading").style.display = "none";
+      document.getElementById("main-content").style.display = "block";
     })
-    .catch(error => {
-      console.error('Error loading data:', error);
-      document.getElementById('loading').innerText = 'Error loading data. Please refresh the page.';
+    .catch((error) => {
+      console.error("Error loading data:", error);
+      document.getElementById("loading").innerText =
+        "Error loading data. Please refresh the page.";
     });
 
-  // Load a new artifact, avoiding repeats if possible
+  // Load a new artifact; avoid repeating if possible
   function loadNewArtifact() {
-    lives = 2;
+    lives = 2; // Reset lives for new question
     updateScoreboard();
     objectCorrectOnFirstTry = undefined;
+
     let availableIndices = [];
     for (let i = 0; i < artifacts.length; i++) {
       if (!usedQuestions.includes(i)) {
@@ -71,70 +72,77 @@ document.addEventListener("DOMContentLoaded", function () {
       usedQuestions = [];
       availableIndices = artifacts.map((_, i) => i);
     }
-    const randomIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
+    const randomIndex =
+      availableIndices[Math.floor(Math.random() * availableIndices.length)];
     usedQuestions.push(randomIndex);
     currentArtifact = artifacts[randomIndex];
 
     // Update artifact image
-    const artifactImage = document.getElementById('artifact-image');
+    const artifactImage = document.getElementById("artifact-image");
     artifactImage.src = currentArtifact.imageURL;
     artifactImage.alt = currentArtifact.correctAnswer;
 
-    // Generate multiple-choice options (shuffled)
-    const options = shuffle([currentArtifact.correctAnswer, ...currentArtifact.distractors]);
-    const choicesDiv = document.getElementById('choices');
-    choicesDiv.innerHTML = '';
-    options.forEach(option => {
-      const button = document.createElement('button');
+    // Generate multiple choice options (shuffled)
+    const options = shuffle([
+      currentArtifact.correctAnswer,
+      ...currentArtifact.distractors,
+    ]);
+    const choicesDiv = document.getElementById("choices");
+    choicesDiv.innerHTML = "";
+    options.forEach((option) => {
+      const button = document.createElement("button");
       button.innerText = option;
-      button.classList.remove('selected', 'correct-final', 'incorrect-final');
-      button.style.border = '2px solid transparent';
+      button.classList.remove("selected", "correct-final", "incorrect-final");
+      button.style.border = "2px solid transparent";
       button.onclick = () => selectAnswer(button);
       choicesDiv.appendChild(button);
     });
 
-    // Reset slider
-    const slider = document.getElementById('year-slider');
+    // Reset the year slider
+    const slider = document.getElementById("year-slider");
     slider.value = slider.min;
-    slider.classList.remove('slider-active', 'slider-correct', 'slider-incorrect');
-    document.getElementById('year-display').innerText = slider.value;
+    slider.classList.remove("slider-active", "slider-correct", "slider-incorrect");
+    document.getElementById("year-display").innerText = slider.value;
 
     selectedAnswer = null;
-    document.getElementById('feedback').innerText = '';
+    document.getElementById("feedback").innerText = "";
     updateScoreboard();
   }
 
-  // Update slider live and add active style
-  document.getElementById('year-slider').addEventListener('input', function () {
-    document.getElementById('year-display').innerText = this.value;
-    this.classList.add('slider-active');
+  // Live update slider
+  document.getElementById("year-slider").addEventListener("input", function () {
+    document.getElementById("year-display").innerText = this.value;
+    this.classList.add("slider-active");
   });
 
-  // Record selected answer and add purple border for selection
+  // When a user selects an answer
   function selectAnswer(buttonElement) {
     selectedAnswer = buttonElement.innerText;
-    const buttons = document.querySelectorAll('#choices button');
-    buttons.forEach(btn => {
-      btn.classList.remove('selected');
-      btn.style.border = '2px solid transparent';
+    const buttons = document.querySelectorAll("#choices button");
+    buttons.forEach((btn) => {
+      btn.classList.remove("selected");
+      btn.style.border = "2px solid transparent";
     });
-    buttonElement.classList.add('selected');
-    buttonElement.style.border = '2px solid purple';
+    buttonElement.classList.add("selected");
+    buttonElement.style.border = "2px solid purple";
   }
 
   // Handle answer submission
-  document.getElementById('submit-btn').addEventListener('click', function () {
+  document.getElementById("submit-btn").addEventListener("click", function () {
     if (!selectedAnswer) {
-      alert('Please select an answer for what the object is.');
+      alert("Please select an answer for what the object is.");
       return;
     }
-    
-    const sliderYear = parseInt(document.getElementById('year-slider').value, 10);
+
+    const sliderYear = parseInt(
+      document.getElementById("year-slider").value,
+      10
+    );
     let yearDiff = 0;
     let isYearCorrect = false;
-    if (typeof currentArtifact.correctYear === 'number') {
+    if (typeof currentArtifact.correctYear === "number") {
       yearDiff = Math.abs(sliderYear - currentArtifact.correctYear);
-      isYearCorrect = (yearDiff === 0);
+      isYearCorrect = yearDiff === 0;
     } else if (Array.isArray(currentArtifact.correctYear)) {
       const lower = currentArtifact.correctYear[0];
       const upper = currentArtifact.correctYear[1];
@@ -142,62 +150,70 @@ document.addEventListener("DOMContentLoaded", function () {
         yearDiff = 0;
         isYearCorrect = true;
       } else {
-        yearDiff = Math.min(Math.abs(sliderYear - lower), Math.abs(sliderYear - upper));
+        yearDiff = Math.min(
+          Math.abs(sliderYear - lower),
+          Math.abs(sliderYear - upper)
+        );
         isYearCorrect = false;
       }
     }
-    
-    const objectIsCorrect = (selectedAnswer === currentArtifact.correctAnswer);
+
+    const objectIsCorrect =
+      selectedAnswer === currentArtifact.correctAnswer;
     const isPerfect = objectIsCorrect && isYearCorrect;
-    
-    // On first submission, if not perfect and lives remain, give partial feedback.
+
+    // On the first submission (if not perfect and lives remain), provide partial feedback.
     if (!isPerfect && lives > 1) {
       lives--;
       updateScoreboard();
       objectCorrectOnFirstTry = objectIsCorrect;
       let interimFeedback = "";
-      interimFeedback += objectIsCorrect ? 
-        '<span class="feedback-object" style="color:green;">Your object answer is correct.</span> ' : 
-        '<span class="feedback-object" style="color:red;">Your object answer is incorrect.</span> ';
-      interimFeedback += isYearCorrect ? 
-        '<span class="feedback-year" style="color:green;">Your year guess is correct.</span>' : 
-        '<span class="feedback-year" style="color:red;">Your year guess is incorrect.</span>';
-      interimFeedback += '<br><strong>Please try again. Lives remaining: ' + "♥".repeat(lives) + '</strong>';
-      
-      const sliderEl = document.getElementById('year-slider');
-      sliderEl.classList.remove('slider-active');
-      sliderEl.classList.add(isYearCorrect ? 'slider-correct' : 'slider-incorrect');
-      
-      document.getElementById('feedback').innerHTML = interimFeedback;
+      interimFeedback += objectIsCorrect
+        ? '<span class="feedback-object" style="color:green;">Your object answer is correct.</span> '
+        : '<span class="feedback-object" style="color:red;">Your object answer is incorrect.</span> ';
+      interimFeedback += isYearCorrect
+        ? '<span class="feedback-year" style="color:green;">Your year guess is correct.</span>'
+        : '<span class="feedback-year" style="color:red;">Your year guess is incorrect.</span>';
+      interimFeedback +=
+        '<br><strong>Please try again. Lives remaining: ' +
+        "♥".repeat(lives) +
+        '</strong>';
+
+      const sliderEl = document.getElementById("year-slider");
+      sliderEl.classList.remove("slider-active");
+      sliderEl.classList.add(isYearCorrect ? "slider-correct" : "slider-incorrect");
+
+      document.getElementById("feedback").innerHTML = interimFeedback;
       return;
     }
-    
+
     // Final submission: disable submit button.
-    document.getElementById('submit-btn').disabled = true;
-    
-    // Finalize MC button styling.
-    const buttons = document.querySelectorAll('#choices button');
-    buttons.forEach(btn => {
+    document.getElementById("submit-btn").disabled = true;
+
+    // Finalize multiple-choice button styling.
+    const buttons = document.querySelectorAll("#choices button");
+    buttons.forEach((btn) => {
       if (btn.innerText === currentArtifact.correctAnswer) {
-        btn.classList.add('correct-final');
-        btn.style.border = '2px solid green';
+        btn.classList.add("correct-final");
+        btn.style.border = "2px solid green";
       } else if (btn.innerText === selectedAnswer) {
-        btn.classList.add('incorrect-final');
-        btn.style.border = '2px solid red';
+        btn.classList.add("incorrect-final");
+        btn.style.border = "2px solid red";
       }
     });
-    
-    const sliderEl = document.getElementById('year-slider');
-    sliderEl.classList.remove('slider-active');
-    sliderEl.classList.add(isYearCorrect ? 'slider-correct' : 'slider-incorrect');
-    
-    // Revised scoring:
-    // Object score: if correct on first try, 3 points; if only on final submission, 1 point; else 0.
+
+    const sliderEl = document.getElementById("year-slider");
+    sliderEl.classList.remove("slider-active");
+    sliderEl.classList.add(isYearCorrect ? "slider-correct" : "slider-incorrect");
+
+    // Revised Tiered Scoring:
+    // Object: if correct on first try, 3 points; if only on final submission, 1 point.
     let objectPoints = 0;
     if (objectIsCorrect) {
-      objectPoints = (objectCorrectOnFirstTry === true) ? 3 : 1;
+      objectPoints = objectCorrectOnFirstTry === true ? 3 : 1;
     }
-    // Year score (tiered): Δ = 0 → 2 points; ≤5 → 1.5; ≤10 → 1; ≤15 → 0.5; otherwise 0.
+    // Year: if object is correct, tiered points:
+    // Δ = 0 → 2; ≤5 → 1.5; ≤10 → 1; ≤15 → 0.5; else 0.
     let yearPoints = 0;
     if (objectIsCorrect) {
       if (yearDiff === 0) {
@@ -208,98 +224,97 @@ document.addEventListener("DOMContentLoaded", function () {
         yearPoints = 1;
       } else if (yearDiff <= 15) {
         yearPoints = 0.5;
-      } else {
-        yearPoints = 0;
       }
     }
     let questionScore = objectIsCorrect ? objectPoints + yearPoints : 0;
     score += questionScore;
     roundCount++;
     updateScoreboard();
-    
-    // Detailed final feedback.
+
+    // Build detailed final feedback.
     let feedbackText = "";
-    feedbackText += objectIsCorrect ?
-      '<span class="feedback-object" style="color:green;">Correct object!</span> ' :
-      '<span class="feedback-object" style="color:red;">Incorrect. The correct object is: ' + currentArtifact.correctAnswer + '.</span> ';
-    if (typeof currentArtifact.correctYear === 'number') {
+    feedbackText += objectIsCorrect
+      ? '<span class="feedback-object" style="color:green;">Correct object!</span> '
+      : '<span class="feedback-object" style="color:red;">Incorrect. The correct object is: ' +
+        currentArtifact.correctAnswer +
+        '.</span> ';
+    if (typeof currentArtifact.correctYear === "number") {
       feedbackText += '<span class="feedback-year">Correct Year: ' + currentArtifact.correctYear + '.</span> ';
     } else if (Array.isArray(currentArtifact.correctYear)) {
       feedbackText += '<span class="feedback-year">Correct Year Range: ' + currentArtifact.correctYear[0] + ' - ' + currentArtifact.correctYear[1] + '.</span> ';
     }
-    feedbackText += isYearCorrect ? 
-      '<span class="feedback-year" style="color:green;">Your year guess is correct.</span> ' :
-      '<span class="feedback-year" style="color:red;">Your year guess was incorrect. ' +
-      (typeof currentArtifact.correctYear === 'number' ?
-       'The correct year is ' + currentArtifact.correctYear :
-       'The correct year range is ' + currentArtifact.correctYear[0] + '–' + currentArtifact.correctYear[1]) +
-      ', and you were off by ' + yearDiff + ' year(s).</span> ';
+    feedbackText += isYearCorrect
+      ? '<span class="feedback-year" style="color:green;">Your year guess is correct.</span> '
+      : '<span class="feedback-year" style="color:red;">Your year guess was incorrect. ' +
+        (typeof currentArtifact.correctYear === "number"
+          ? 'The correct year is ' + currentArtifact.correctYear
+          : 'The correct year range is ' + currentArtifact.correctYear[0] + '–' + currentArtifact.correctYear[1]) +
+        ', and you were off by ' + yearDiff + ' year(s).</span> ';
     feedbackText += '<br><span class="feedback-points">You earned ' + questionScore + ' point(s) for this question.</span>';
-    
-    document.getElementById('feedback').innerHTML = feedbackText;
-    
-    const mainContent = document.getElementById('main-content');
-    mainContent.classList.add((objectIsCorrect && isYearCorrect) ? 'flash-correct' : 'flash-incorrect');
+
+    document.getElementById("feedback").innerHTML = feedbackText;
+
+    const mainContent = document.getElementById("main-content");
+    mainContent.classList.add((objectIsCorrect && isYearCorrect) ? "flash-correct" : "flash-incorrect");
     setTimeout(() => {
-      mainContent.classList.remove('flash-correct', 'flash-incorrect');
+      mainContent.classList.remove("flash-correct", "flash-incorrect");
     }, 500);
-    
-    // After the 5th question, show a Finish Game button to allow review of the final question.
+
+    // After the 5th question, show a "Finish Game" button; otherwise, show "Next Question"
+    const feedbackDiv = document.getElementById("feedback");
     if (roundCount >= 5) {
-      const finishButton = document.createElement('button');
-      finishButton.innerText = 'Finish Game';
-      finishButton.id = 'finish-btn';
-      finishButton.style.marginTop = '20px';
+      const finishButton = document.createElement("button");
+      finishButton.innerText = "Finish Game";
+      finishButton.id = "finish-btn";
+      finishButton.style.marginTop = "20px";
       finishButton.onclick = function () {
         showScore();
       };
-      const feedbackDiv = document.getElementById('feedback');
-      feedbackDiv.appendChild(document.createElement('br'));
+      feedbackDiv.appendChild(document.createElement("br"));
       feedbackDiv.appendChild(finishButton);
     } else {
-      const nextButton = document.createElement('button');
-      nextButton.innerText = 'Next Question';
-      nextButton.id = 'next-btn';
-      nextButton.style.marginTop = '20px';
+      const nextButton = document.createElement("button");
+      nextButton.innerText = "Next Question";
+      nextButton.id = "next-btn";
+      nextButton.style.marginTop = "20px";
       nextButton.onclick = function () {
-        document.getElementById('submit-btn').disabled = false;
+        document.getElementById("submit-btn").disabled = false;
         nextButton.remove();
         loadNewArtifact();
       };
-      const feedbackDiv = document.getElementById('feedback');
-      feedbackDiv.appendChild(document.createElement('br'));
+      feedbackDiv.appendChild(document.createElement("br"));
       feedbackDiv.appendChild(nextButton);
     }
   });
 
-  // Show score summary after 5 rounds
+  // Show score summary after 5 rounds with a "Play Again" button.
   function showScore() {
-    document.getElementById('main-content').style.display = 'none';
-    document.getElementById('scoreboard').style.display = 'none';
-    const scoreDiv = document.getElementById('score-summary');
-    scoreDiv.style.display = 'block';
+    document.getElementById("main-content").style.display = "none";
+    document.getElementById("scoreboard").style.display = "none";
+    const scoreDiv = document.getElementById("score-summary");
+    scoreDiv.style.display = "block";
     scoreDiv.innerHTML = `
       <h2>Congratulations!</h2>
       <h2>Your Score: ${score} / 25</h2>
       <p>You completed ${roundCount} rounds.</p>
       <button id="play-again">Play Again</button>
     `;
-    document.getElementById('play-again').onclick = function () {
+    document.getElementById("play-again").onclick = function () {
       roundCount = 0;
       score = 0;
       updateScoreboard();
-      scoreDiv.style.display = 'none';
-      document.getElementById('scoreboard').style.display = 'block';
-      document.getElementById('main-content').style.display = 'block';
-      document.getElementById('submit-btn').disabled = false;
+      scoreDiv.style.display = "none";
+      document.getElementById("scoreboard").style.display = "block";
+      document.getElementById("main-content").style.display = "block";
+      document.getElementById("submit-btn").disabled = false;
       loadNewArtifact();
     };
   }
 
   // Image Zoom Functionality
-  document.getElementById('artifact-container').addEventListener('wheel', function (e) {
+  document.getElementById("artifact-container").addEventListener("wheel", function (e) {
     e.preventDefault();
-    const img = document.getElementById('artifact-image');
+    const img = document.getElementById("artifact-image");
     const rect = this.getBoundingClientRect();
     const offsetX = e.clientX - rect.left;
     const offsetY = e.clientY - rect.top;
