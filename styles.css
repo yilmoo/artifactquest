@@ -19,6 +19,34 @@ header h1 {
   font-size: 2.5rem;
 }
 
+/* Home/Landing Screen Styles */
+#home-screen {
+  text-align: center;
+  margin: 20px auto;
+}
+#home-screen header {
+  font-size: 2.5rem;
+  color: #2c3e50;
+  margin-bottom: 20px;
+}
+#home-content p {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+}
+#play-button {
+  padding: 10px 20px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  background-color: #27ae60;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+}
+#play-button:hover {
+  background-color: #1e8449;
+}
+
+/* Game Screen Styles */
 /* Instruction Banner */
 #instructions {
   background-color: #e0e0e0;
@@ -255,4 +283,33 @@ header h1 {
 }
 #score-summary button:hover {
   background-color: #1e8449;
+}
+
+/* Volume Control Styles */
+#volume-control {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+#volume-control button {
+  background: transparent;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+  color: #2c3e50;
+  transition: color 0.3s;
+}
+#volume-control button:hover {
+  color: #27ae60;
+}
+#volume-control input[type="range"] {
+  width: 100px;
+  display: none;
+}
+#volume-control:hover input[type="range"] {
+  display: block;
 }
