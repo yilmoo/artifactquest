@@ -1,1 +1,74 @@
-
+[
+    {
+        "imageURL": "images/wire cutters.jpg",
+        "correctAnswer": "Wire Cutters",
+        "correctYear": [1915, 1925],
+        "correctLocation": "United States",
+        "distractors": ["Hairpin", "Tweezers", "Nail Clippers"],
+        "category": "Historical Tools"
+    },
+    {
+        "imageURL": "images/motorcar.jpg",
+        "correctAnswer": "Motorcar",
+        "correctYear": [1886, 1893],
+        "correctLocation": "Germany",
+        "distractors": ["Horse Drawn Carriage", "Bicycle", "Hand Pulled Rickshaw"],
+        "category": "Historical Tools"
+    },
+    {
+        "imageURL": "images/folding microscope.jpg",
+        "correctAnswer": "Microscope",
+        "correctYear": 1800,
+        "correctLocation": "England",
+        "distractors": ["Pocket Mirror", "Jewelry Box", "Cigarette Box"],
+        "category": "Historical Tools"
+    },
+    {
+        "imageURL": "images/headphones.jpg",
+        "correctAnswer": "Headphones",
+        "correctYear": 1927,
+        "correctLocation": "United States",
+        "distractors": ["Stethoscope", "Telephone Receiver", "Hearing Aid"],
+        "category": "Everyday Objects"
+    },
+    {
+        "imageURL": "images/toaster.jpg",
+        "correctAnswer": "Toaster",
+        "correctYear": 1914,
+        "correctLocation": "United States",
+        "distractors": ["Folding Lantern", "Cigar Humidor", "Portable Stove"],
+        "category": "Everyday Objects"
+    },
+    {
+        "imageURL": "images/coin purse.jpg",
+        "correctAnswer": "Coin Purse",
+        "correctYear": [1830, 1860],
+        "correctLocation": "United States",
+        "distractors": ["Decorative Hat", "Perfume Bottle Holder", "Eyeglass Holder"],
+        "category": "Fashion Accessories"
+    },
+    {
+        "imageURL": "images/apron.jpg",
+        "correctAnswer": "Apron",
+        "correctYear": [1600, 1630],
+        "correctLocation": "Italy",
+        "distractors": ["Handkerchief", "Collar", "Tablecloth"],
+        "category": "Fashion Accessories"
+    },
+    {
+        "imageURL": "images/minaret.jpg",
+        "correctAnswer": "Minaret",
+        "correctYear": [1646, 1660],
+        "correctLocation": "Uzbekistan",
+        "distractors": ["Ornamental Chimney", "Tower Clock", "Russian Onion Dome"],
+        "category": "Architectural Details"
+    },
+    {
+        "imageURL": "images/cathedral.jpg",
+        "correctAnswer": "Cathedral",
+        "correctYear": [1738, 1868],
+        "correctLocation": "United States",
+        "distractors": ["Town Hall", "Medieval Library", "Opera House"],
+        "category": "Architectural Details"
+    }
+]
