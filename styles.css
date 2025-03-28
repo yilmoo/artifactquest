@@ -115,7 +115,6 @@ header h1 {
 }
 #choices button.selected {
   border: 2px solid purple;
-  /* Remove fill change pre-submission */
 }
 #choices button.correct-final {
   background-color: #4caf50 !important;
@@ -142,9 +141,15 @@ header h1 {
 #year-slider.slider-active {
   border-color: purple;
 }
+#year-slider.slider-correct {
+  border-color: green;
+}
+#year-slider.slider-incorrect {
+  border-color: red;
+}
 #slider-ticks {
   position: absolute;
-  top: 30px; /* Adjust to position below slider */
+  top: 30px; /* Adjust to position tick labels beneath the slider */
   left: 0;
   width: 100%;
 }
@@ -214,11 +219,9 @@ header h1 {
 }
 #feedback .feedback-object {
   font-weight: bold;
-  color: #333;
 }
 #feedback .feedback-year {
   font-style: italic;
-  color: #555;
 }
 #feedback .feedback-points {
   color: #27ae60;
