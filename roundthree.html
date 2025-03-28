@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ArtifactQuest - Round Three</title>
+  <title>ArtifactQuest - Round</title>
   <link rel="stylesheet" href="styles.css">
-  <!-- Shared game logic -->
+  <!-- Include shared round logic -->
   <script src="round.js" defer></script>
 </head>
 <body>
   <header>
-    <!-- The header text is dynamically updated by round.js -->
-    <h1 id="round-header">ArtifactQuest - Round Three</h1>
+    <!-- Leave header empty so round.js can update it dynamically -->
+    <h1 id="round-header"></h1>
   </header>
   <div id="scoreboard">
     <p>
@@ -19,6 +19,7 @@
       Score: <span id="score-display">0</span> | 
       Lives: <span id="lives-display">♥♥</span>
     </p>
+    <!-- Timer display -->
     <p id="timer-display" style="font-size: 1.2rem; color: red;"></p>
   </div>
   <div id="loading">Loading...</div>
