@@ -11,7 +11,25 @@
     <h1>ArtifactQuest</h1>
   </header>
   
-  <main id="main-content">
+  <!-- Instruction Banner -->
+  <div id="instructions">
+    <p>
+      Select the correct object from the multiple choices and adjust the slider to guess the correct year.
+      When you submit your answer, you'll see feedback. Then click "Next Question" to continue.
+      Play 5 rounds per session to get a cumulative score. Good luck!
+    </p>
+  </div>
+  
+  <!-- Scoreboard -->
+  <div id="scoreboard">
+    <p>Round: <span id="round-display">0</span> / 5 | Score: <span id="score-display">0</span></p>
+  </div>
+
+  <!-- Loading Spinner -->
+  <div id="loading">Loading...</div>
+
+  <!-- Main Content -->
+  <main id="main-content" style="display: none;">
     <!-- Zoomable Artifact Image Display -->
     <div id="artifact-container">
       <img id="artifact-image" src="" alt="Artifact Image">
@@ -23,19 +41,21 @@
       <div id="choices"></div>
     </section>
     
-    <!-- "When" Slider Section -->
+    <!-- "When" Slider Section with Slider Container -->
     <section id="time-container">
       <p>When was it used? <span id="year-display"></span></p>
-      <input type="range" id="year-slider" min="1500" max="2020" step="1" list="tickmarks">
-      <datalist id="tickmarks">
-        <option value="1500" label="1500"></option>
-        <option value="1600" label="1600"></option>
-        <option value="1700" label="1700"></option>
-        <option value="1800" label="1800"></option>
-        <option value="1900" label="1900"></option>
-        <option value="2000" label="2000"></option>
-        <option value="2020" label="2020"></option>
-      </datalist>
+      <div class="slider-container">
+        <input type="range" id="year-slider" min="1500" max="2020" step="1">
+        <div id="slider-ticks">
+          <span class="tick" style="left: 0%;">1500</span>
+          <span class="tick" style="left: 19.23%;">1600</span>
+          <span class="tick" style="left: 38.46%;">1700</span>
+          <span class="tick" style="left: 57.69%;">1800</span>
+          <span class="tick" style="left: 76.92%;">1900</span>
+          <span class="tick" style="left: 96.15%;">2000</span>
+          <span class="tick" style="left: 100%;">2020</span>
+        </div>
+      </div>
     </section>
     
     <!-- Submit Button -->
@@ -45,12 +65,15 @@
     <div id="feedback"></div>
   </main>
   
+  <!-- Score Summary (hidden by default) -->
+  <div id="score-summary" style="display:none;"></div>
+  
   <!-- Community Submission Link -->
   <footer>
     <p>
-      Have an artifact to share? 
+      Have an artifact to share?
       <!-- Replace the URL below with your actual Google Forms link -->
-      <a href="https://forms.gle/W14xvwJX7CaBbPLy5">Submit it here</a>
+      <a href="https://forms.gle/your-google-form-link" target="_blank">Submit it here</a>
     </p>
   </footer>
   
