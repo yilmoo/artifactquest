@@ -147,7 +147,7 @@ header h1 {
   border-color: #c62828 !important;
 }
 
-/* Slider Container & Custom Tick Marks */
+/* Slider Container & Tick Marks */
 .slider-container {
   position: relative;
   width: 80%;
@@ -211,7 +211,7 @@ header h1 {
   background-color: #1e8449;
 }
 
-/* Next/Finish Button */
+/* Next/Finish Buttons */
 #next-btn, #finish-btn {
   padding: 8px 16px;
   background-color: #27ae60;
@@ -249,7 +249,7 @@ header h1 {
   font-weight: bold;
 }
 
-/* Score Summary (End Game) */
+/* Final Score Page */
 #score-summary {
   margin: 30px auto;
   padding: 20px;
