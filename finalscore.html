@@ -7,14 +7,12 @@
   <link rel="stylesheet" href="styles.css">
   <script>
     document.addEventListener("DOMContentLoaded", function () {
-      // Retrieve final score data from localStorage
       const score = localStorage.getItem("score") || 0;
       const rounds = localStorage.getItem("roundCount") || 0;
       document.getElementById("final-score").innerText = score;
       document.getElementById("final-rounds").innerText = rounds;
     });
     function playAgain() {
-      // Reset game state and navigate back to the home page
       localStorage.setItem("score", "0");
       localStorage.setItem("roundCount", "0");
       localStorage.setItem("usedQuestions", JSON.stringify([]));
@@ -39,4 +37,3 @@
   </footer>
 </body>
 </html>
-
