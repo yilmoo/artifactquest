@@ -1,23 +1,24 @@
 document.addEventListener("DOMContentLoaded", function () {
   console.debug("DOM fully loaded in round.js.");
 
-  // Dynamically update the header based on the current round (stored in localStorage)
-  let currentRound = parseInt(localStorage.getItem("roundCount") || "0");
+  // Retrieve header element for dynamic update
   const roundHeader = document.getElementById("round-header");
-  if (roundHeader) {
-    roundHeader.innerText = "ArtifactQuest - Round " + (currentRound + 1);
-  }
 
   // Retrieve saved game state from localStorage
   let roundCount = parseInt(localStorage.getItem("roundCount") || "0");
   let score = parseFloat(localStorage.getItem("score") || "0");
   let usedQuestions = JSON.parse(localStorage.getItem("usedQuestions") || "[]");
 
+  // Immediately update dynamic header based on current round
+  if (roundHeader) {
+    roundHeader.innerText = "ArtifactQuest - Round " + (roundCount + 1);
+  }
+
   let artifacts = [];
   let currentArtifact = null;
   let selectedAnswer = null;
   let lives = 2;
-  let objectCorrectOnFirstTry; // true if correct on the first try
+  let objectCorrectOnFirstTry; // will be true if the object was correct on the first try
   let scale = 1;
   const MIN_SCALE = 1;
   const MAX_SCALE = 3;
@@ -37,10 +38,10 @@ document.addEventListener("DOMContentLoaded", function () {
         if (timeLimit <= 0) {
           clearInterval(timerInterval);
           timeExpired = true;
-          // Lock out inputs and hide submit button when time expires
+          // Lock out inputs and hide the submit button when time expires
           lockInputs();
           alert("Time's up!");
-          // Force final submission regardless of whether an answer was provided
+          // Finalize the round regardless of partial input
           finalizeSubmission();
         }
       }, 1000);
@@ -66,28 +67,28 @@ document.addEventListener("DOMContentLoaded", function () {
   function updateScoreboard() {
     document.getElementById("round-display").innerText = roundCount;
     document.getElementById("score-display").innerText = score;
+    // Display hearts only if lives remain
     document.getElementById("lives-display").innerText = lives > 0 ? "♥".repeat(lives) : "";
     localStorage.setItem("roundCount", roundCount);
     localStorage.setItem("score", score);
     localStorage.setItem("usedQuestions", JSON.stringify(usedQuestions));
   }
   
-  // Lock out answer buttons, slider, and hide the submit button
+  // Lock out all inputs and hide the submit button
   function lockInputs() {
     document.querySelectorAll("#choices button").forEach(btn => btn.disabled = true);
     document.getElementById("year-slider").disabled = true;
     document.getElementById("submit-btn").style.display = "none";
   }
   
-  // This function finalizes the round submission (whether via timer expiry or manual submit)
+  // Finalize submission: this branch locks everything, calculates the final score for the round,
+  // and shows the final feedback (with a Next Question or Finish Game button).
   function finalizeSubmission() {
-    // Lock out inputs (if not already locked)
+    // Lock inputs and remove lives (both hearts disappear)
     lockInputs();
-    // Remove any remaining lives (both hearts disappear)
     lives = 0;
     updateScoreboard();
     
-    // Process the year input
     const sliderYear = parseInt(document.getElementById("year-slider").value, 10);
     let yearDiff = 0;
     let isYearCorrect = false;
@@ -106,10 +107,14 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     }
     
-    // If no object was selected, treat it as an incorrect answer.
+    // Determine if the object answer is correct. If no answer was selected, treat it as incorrect.
     const objectIsCorrect = (selectedAnswer === currentArtifact.correctAnswer);
-    // Final submission – no retry is allowed
-    // Compute points only if an answer was provided; otherwise, 0 points.
+    
+    // Calculate final points:
+    // If there was no selection at all, award 0.
+    // Otherwise, if the object is correct:
+    //   - If it was correct on the first try, award 3; else award 1.
+    // Year points are awarded only if the object is correct.
     let objectPoints = 0;
     if (selectedAnswer) {
       objectPoints = objectIsCorrect ? (objectCorrectOnFirstTry === true ? 3 : 1) : 0;
@@ -132,20 +137,24 @@ document.addEventListener("DOMContentLoaded", function () {
     roundCount++;
     updateScoreboard();
     
-    // Build feedback
+    // Build final feedback message:
     let feedbackText = "";
     if (!selectedAnswer) {
-      feedbackText = '<span class="feedback-object" style="color:red;">Time\'s up! No answer provided. You earned 0 point(s).</span>';
+      feedbackText = '<span class="feedback-object" style="color:red;">Time\'s up! No answer provided. You earned 0 point(s).</span><br>';
+      feedbackText += '<span class="feedback-object" style="color:red;">The correct object was: ' + currentArtifact.correctAnswer + '.</span> ';
     } else {
       feedbackText += objectIsCorrect ?
         '<span class="feedback-object" style="color:green;">Correct object!</span> ' :
         '<span class="feedback-object" style="color:red;">Incorrect. The correct object is: ' + currentArtifact.correctAnswer + '.</span> ';
-      
-      if (typeof currentArtifact.correctYear === "number") {
-        feedbackText += '<span class="feedback-year">Correct Year: ' + currentArtifact.correctYear + '.</span> ';
-      } else if (Array.isArray(currentArtifact.correctYear)) {
-        feedbackText += '<span class="feedback-year">Correct Year Range: ' + currentArtifact.correctYear[0] + ' - ' + currentArtifact.correctYear[1] + '.</span> ';
-      }
+    }
+    
+    if (typeof currentArtifact.correctYear === "number") {
+      feedbackText += '<span class="feedback-year">Correct Year: ' + currentArtifact.correctYear + '.</span> ';
+    } else if (Array.isArray(currentArtifact.correctYear)) {
+      feedbackText += '<span class="feedback-year">Correct Year Range: ' + currentArtifact.correctYear[0] + ' - ' + currentArtifact.correctYear[1] + '.</span> ';
+    }
+    
+    if (selectedAnswer) {
       feedbackText += isYearCorrect ?
         '<span class="feedback-year" style="color:green;">Your year guess is correct.</span> ' :
         '<span class="feedback-year" style="color:red;">Your year guess was incorrect. ' +
@@ -164,7 +173,7 @@ document.addEventListener("DOMContentLoaded", function () {
       mainContent.classList.remove("flash-correct", "flash-incorrect");
     }, 500);
     
-    // Show Next Question (for rounds 1–4) or Finish Game button (for round 5)
+    // Show the Next Question button for rounds 1–4 or Finish Game button for round 5
     const feedbackDiv = document.getElementById("feedback");
     if (roundCount >= 5) {
       const finishButton = document.createElement("button");
@@ -180,6 +189,7 @@ document.addEventListener("DOMContentLoaded", function () {
       nextButton.id = "next-btn";
       nextButton.style.marginTop = "20px";
       nextButton.onclick = function () {
+        // Make sure the submit button is visible again for the next round
         document.getElementById("submit-btn").style.display = "inline-block";
         nextButton.remove();
         loadNewArtifact();
@@ -189,13 +199,84 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
   
-  // Load artifact and set up the round
+  // Submit button event listener: this handles both manual submission and partial feedback.
+  document.getElementById("submit-btn").addEventListener("click", function () {
+    // If timer is still running and no object selected, alert the user.
+    if (!timeExpired && !selectedAnswer) {
+      alert("Please select an answer.");
+      return;
+    }
+    // Stop the timer as the user is submitting
+    clearTimer();
+    
+    // Evaluate the current attempt
+    const sliderYear = parseInt(document.getElementById("year-slider").value, 10);
+    let yearDiff = 0;
+    let isYearCorrect = false;
+    if (typeof currentArtifact.correctYear === "number") {
+      yearDiff = Math.abs(sliderYear - currentArtifact.correctYear);
+      isYearCorrect = (yearDiff === 0);
+    } else if (Array.isArray(currentArtifact.correctYear)) {
+      const lower = currentArtifact.correctYear[0];
+      const upper = currentArtifact.correctYear[1];
+      if (sliderYear >= lower && sliderYear <= upper) {
+        yearDiff = 0;
+        isYearCorrect = true;
+      } else {
+        yearDiff = Math.min(Math.abs(sliderYear - lower), Math.abs(sliderYear - upper));
+        isYearCorrect = false;
+      }
+    }
+    
+    // Determine if the object answer is correct
+    const objectIsCorrect = (selectedAnswer === currentArtifact.correctAnswer);
+    const isPerfect = selectedAnswer && objectIsCorrect && isYearCorrect;
+    
+    // If the answer is not perfect and you still have a life to use, provide partial feedback
+    if (!isPerfect && lives > 1 && !timeExpired) {
+      lives--;
+      updateScoreboard();
+      objectCorrectOnFirstTry = objectIsCorrect; // record the first attempt's object result
+      let interimFeedback = "";
+      interimFeedback += objectIsCorrect ?
+        '<span class="feedback-object" style="color:green;">Your object answer is correct.</span> ' :
+        '<span class="feedback-object" style="color:red;">Your object answer is incorrect.</span> ';
+      interimFeedback += isYearCorrect ?
+        '<span class="feedback-year" style="color:green;">Your year guess is correct.</span>' :
+        '<span class="feedback-year" style="color:red;">Your year guess is incorrect.</span>';
+      interimFeedback += '<br><strong>Please try again. Lives remaining: ' + "♥".repeat(lives) + '</strong>';
+      
+      const sliderEl = document.getElementById("year-slider");
+      sliderEl.classList.remove("slider-active");
+      sliderEl.classList.add(isYearCorrect ? "slider-correct" : "slider-incorrect");
+      
+      document.getElementById("feedback").innerHTML = interimFeedback;
+      
+      // Re-enable inputs for the retry attempt and restart the timer
+      document.getElementById("submit-btn").style.display = "inline-block";
+      // (Keep the current selection and slider value so the user can adjust if needed)
+      startTimer();
+      return;
+    } else {
+      // Either the answer is perfect, no lives remain, or time has expired – finalize submission.
+      finalizeSubmission();
+    }
+  });
+  
+  // Load a new artifact and prepare the round
   function loadNewArtifact() {
-    clearTimer(); // Clear any previous timer
+    clearTimer();
     lives = 2;
     timeExpired = false;
     updateScoreboard();
     objectCorrectOnFirstTry = undefined;
+    
+    // Update dynamic header based on the updated roundCount
+    roundCount = parseInt(localStorage.getItem("roundCount") || "0");
+    if (roundHeader) {
+      roundHeader.innerText = "ArtifactQuest - Round " + (roundCount + 1);
+    }
+    
     let availableIndices = [];
     for (let i = 0; i < artifacts.length; i++) {
       if (!usedQuestions.includes(i)) {
@@ -236,25 +317,25 @@ document.addEventListener("DOMContentLoaded", function () {
     slider.classList.remove("slider-active", "slider-correct", "slider-incorrect");
     document.getElementById("year-display").innerText = slider.value;
   
-    // Reset feedback and selected answer
+    // Clear feedback and selected answer
     selectedAnswer = null;
     document.getElementById("feedback").innerHTML = "";
     updateScoreboard();
     
-    // Ensure submit button is visible
+    // Ensure the submit button is visible
     document.getElementById("submit-btn").style.display = "inline-block";
     
     // Start timer for this round
     startTimer();
   }
   
-  // Event listener for the slider (year input)
+  // Slider event listener: update display as the slider moves
   document.getElementById("year-slider").addEventListener("input", function () {
     document.getElementById("year-display").innerText = this.value;
     this.classList.add("slider-active");
   });
   
-  // When a multiple-choice button is clicked, record the selected answer
+  // Record the selected answer when a multiple-choice button is clicked
   function selectAnswer(buttonElement) {
     selectedAnswer = buttonElement.innerText;
     const buttons = document.querySelectorAll("#choices button");
@@ -266,18 +347,7 @@ document.addEventListener("DOMContentLoaded", function () {
     buttonElement.style.border = "2px solid purple";
   }
   
-  // Submit button event listener – if timer hasn't expired, check for a valid answer.
-  document.getElementById("submit-btn").addEventListener("click", function () {
-    // If timer is still running and no object is selected, alert the user.
-    if (!timeExpired && !selectedAnswer) {
-      alert("Please select an answer.");
-      return;
-    }
-    clearTimer();
-    finalizeSubmission();
-  });
-  
-  // Fetch the artifact data and then load the first artifact
+  // Fetch artifact data and start the first round
   fetch("data.json")
     .then(response => response.json())
     .then(data => {
