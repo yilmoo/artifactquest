@@ -32,7 +32,7 @@ function loadNewArtifact() {
   scale = 1;
   document.getElementById('artifact-image').style.transform = `scale(${scale})`;
 
-  // Randomly select an artifact from the data
+  // Select a random artifact from the data
   currentArtifact = artifacts[Math.floor(Math.random() * artifacts.length)];
 
   // Update the artifact image and alt text
@@ -82,7 +82,7 @@ function selectAnswer(answer) {
   });
 }
 
-// Handle answer submission and display feedback
+// Handle answer submission and display feedback with visual flash
 document.getElementById('submit-btn').addEventListener('click', function () {
   if (!selectedAnswer) {
     alert('Please select an answer for what the object is.');
@@ -93,17 +93,19 @@ document.getElementById('submit-btn').addEventListener('click', function () {
   let yearDiff = 0;
   let isYearCorrect = false;
   
-  // Determine if correctYear is an exact year (number) or a range (array)
+  // Determine whether correctYear is a number (exact year) or an array (range)
   if (typeof currentArtifact.correctYear === 'number') {
     yearDiff = Math.abs(sliderYear - currentArtifact.correctYear);
     isYearCorrect = (yearDiff === 0);
   } else if (Array.isArray(currentArtifact.correctYear)) {
-    let lower = currentArtifact.correctYear[0];
-    let upper = currentArtifact.correctYear[1];
+    const lower = currentArtifact.correctYear[0];
+    const upper = currentArtifact.correctYear[1];
+    // Check if the guess is within the range
     if (sliderYear >= lower && sliderYear <= upper) {
       yearDiff = 0;
       isYearCorrect = true;
     } else {
+      // Calculate the minimum difference from the bounds of the range
       yearDiff = Math.min(Math.abs(sliderYear - lower), Math.abs(sliderYear - upper));
       isYearCorrect = false;
     }
@@ -111,23 +113,34 @@ document.getElementById('submit-btn').addEventListener('click', function () {
   
   let feedbackText = '';
   
-  // Provide feedback on object guess
+  // Feedback on object guess
   if (selectedAnswer === currentArtifact.correctAnswer) {
     feedbackText += 'Correct object! ';
   } else {
     feedbackText += `Incorrect. The correct object is: ${currentArtifact.correctAnswer}. `;
   }
   
-  // Provide feedback on year guess
+  // Feedback on year guess
   if (isYearCorrect) {
     feedbackText += 'Your year guess is correct.';
   } else {
     feedbackText += `Your year guess was off by ${yearDiff} year(s).`;
   }
   
-  // Display feedback
+  // Display feedback text
   document.getElementById('feedback').innerText = feedbackText;
-
+  
+  // Apply flash visual cue to main content based on correctness
+  const mainContent = document.getElementById('main-content');
+  if (selectedAnswer === currentArtifact.correctAnswer && isYearCorrect) {
+    mainContent.classList.add('flash-correct');
+  } else {
+    mainContent.classList.add('flash-incorrect');
+  }
+  setTimeout(() => {
+    mainContent.classList.remove('flash-correct', 'flash-incorrect');
+  }, 500);
+  
   // After 3 seconds, load a new artifact
   setTimeout(() => {
     loadNewArtifact();
@@ -157,4 +170,3 @@ document.getElementById('artifact-container').addEventListener('wheel', function
   }
   img.style.transform = `scale(${scale})`;
 });
-
