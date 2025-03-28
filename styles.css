@@ -19,15 +19,18 @@ header h1 {
   font-size: 2.5rem;
 }
 
+/* Home Screen Specific Header */
+.home-header h1 {
+  color: #ffffff; 
+  background-color: #2c3e50; 
+  padding: 10px;
+  border-radius: 5px;
+}
+
 /* Home/Landing Screen Styles */
 #home-screen {
   text-align: center;
   margin: 20px auto;
-}
-#home-screen header {
-  font-size: 2.5rem;
-  color: #2c3e50;
-  margin-bottom: 20px;
 }
 #home-content p {
   font-size: 1.2rem;
@@ -47,7 +50,6 @@ header h1 {
 }
 
 /* Game Screen Styles */
-/* Instruction Banner */
 #instructions {
   background-color: #e0e0e0;
   padding: 15px;
@@ -57,8 +59,6 @@ header h1 {
   font-size: 1.1rem;
   color: #333;
 }
-
-/* Scoreboard */
 #scoreboard {
   margin: 10px auto;
   padding: 10px;
@@ -67,22 +67,16 @@ header h1 {
   font-weight: bold;
   color: #2c3e50;
 }
-
-/* Lives Display */
 #lives-display {
   font-size: 1.4rem;
   color: red;
 }
-
-/* Loading Spinner */
 #loading {
   font-size: 1.8rem;
   font-weight: bold;
   text-align: center;
   margin: 50px auto;
 }
-
-/* Main Content (for flash effect) */
 #main-content {
   transition: background-color 0.5s;
 }
@@ -285,7 +279,7 @@ header h1 {
   background-color: #1e8449;
 }
 
-/* Volume Control Styles: Hoverable Volume Slider */
+/* Volume Control Styles: Speaker Icon with Hoverable Volume Slider */
 #volume-control {
   position: fixed;
   top: 20px;
@@ -306,7 +300,7 @@ header h1 {
 #volume-control button:hover {
   color: #27ae60;
 }
-/* Initially hide the slider; show it only when hovering over the volume-control container */
+/* Initially hide the slider; show on hover over the volume-control container */
 #volume-control input[type="range"] {
   width: 100px;
   display: none;
