@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ArtifactQuest</title>
+  <title>ArtifactQuest - Home</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -14,80 +14,15 @@
     </header>
     <div id="home-content">
       <p>
-        Select the correct object and adjust the slider to guess the right time period.<br>
-        You have <strong>2 lives</strong> per question – on your first try you'll learn which parts (object and/or year) are correct (without full details), and on your final attempt you’ll see complete feedback.<br>
-        Complete 5 rounds for your final score.
-        <br><br>
+        Test your knowledge of historical artifacts!<br>
+        You have <strong>2 lives</strong> per question. On your first try you’ll learn which parts (object and/or year) are correct without full details; on your final try you’ll receive complete feedback.<br><br>
         <em>Scoring:</em><br>
-        • <strong>Object Guess:</strong> Correct on first try = 3 points; if correct only on your second try = 1 point; otherwise, 0.<br>
-        • <strong>Year Guess:</strong> Exactly correct = 2 points; within 5 years = 1.5 points; within 10 years = 1 point; within 15 years = 0.5 point; else, 0.
+        • <strong>Object Guess:</strong> Correct on first try = 3 points; if correct only on your second (final) try = 1 point; else 0.<br>
+        • <strong>Year Guess:</strong> Exactly correct = 2 points; within 5 years = 1.5 points; within 10 = 1 point; within 15 = 0.5 point; otherwise, 0.
       </p>
-      <button id="play-button">Play</button>
+      <!-- Play button navigates to game-settings.html -->
+      <button id="play-button" onclick="window.location.href='game-settings.html'">Play</button>
     </div>
-    <footer>
-      <p>
-        Have an artifact to share?
-        <a href="https://forms.gle/j1EqvLFed4AKAMzZ7" target="_blank">Submit it here</a>
-      </p>
-    </footer>
-  </div>
-
-  <!-- Game Screen -->
-  <div id="game-screen" style="display:none;">
-    <header>
-      <h1>ArtifactQuest</h1>
-    </header>
-    
-    <div id="instructions">
-      <p>
-        You have <strong>2 lives</strong> per question. Your first submission shows which parts (object and/or year) are correct without revealing full details; on your final try, complete feedback (including a red message if your year guess is incorrect) will be provided.<br>
-        Complete 5 rounds for your final score.
-      </p>
-    </div>
-    
-    <div id="scoreboard">
-      <p>
-        Round: <span id="round-display">0</span> / 5 | 
-        Score: <span id="score-display">0</span> | 
-        Lives: <span id="lives-display">♥♥</span>
-      </p>
-    </div>
-
-    <div id="loading">Loading...</div>
-
-    <main id="main-content" style="display:none;">
-      <div id="artifact-container">
-        <img id="artifact-image" src="" alt="Artifact Image">
-      </div>
-      
-      <section id="choice-container">
-        <p>What is this object?</p>
-        <div id="choices"></div>
-      </section>
-      
-      <section id="time-container">
-        <p>When was it used? <span id="year-display"></span></p>
-        <div class="slider-container">
-          <input type="range" id="year-slider" min="1500" max="2020" step="1">
-          <div id="slider-ticks">
-            <span class="tick" style="left: 0%;">1500</span>
-            <span class="tick" style="left: 19.23%;">1600</span>
-            <span class="tick" style="left: 38.46%;">1700</span>
-            <span class="tick" style="left: 57.69%;">1800</span>
-            <span class="tick" style="left: 76.92%;">1900</span>
-            <span class="tick" style="left: 96.15%;">2000</span>
-            <span class="tick" style="left: 100%;">2020</span>
-          </div>
-        </div>
-      </section>
-      
-      <button id="submit-btn">Submit Answer</button>
-      
-      <div id="feedback"></div>
-    </main>
-    
-    <div id="score-summary" style="display:none;"></div>
-
     <footer>
       <p>
         Have an artifact to share?
