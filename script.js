@@ -23,12 +23,11 @@ function shuffle(array) {
   return array;
 }
 
-// Update Scoreboard Display including lives
+// Update Scoreboard Display, including lives (displayed as ♥)
 function updateScoreboard() {
   document.getElementById('round-display').innerText = roundCount;
   document.getElementById('score-display').innerText = score;
-  const hearts = "♥".repeat(lives);
-  document.getElementById('lives-display').innerText = hearts;
+  document.getElementById('lives-display').innerText = "♥".repeat(lives);
 }
 
 // Load JSON data from data.json
@@ -45,9 +44,9 @@ fetch('data.json')
     document.getElementById('loading').innerText = 'Error loading data. Please refresh the page.';
   });
 
-// Load and display a new artifact, avoiding repeats if possible
+// Load and display a new artifact, avoiding repeats when possible
 function loadNewArtifact() {
-  // Reset lives for new question
+  // Reset lives for the new question
   lives = 2;
   updateScoreboard();
 
@@ -78,41 +77,39 @@ function loadNewArtifact() {
   options.forEach(option => {
     const button = document.createElement('button');
     button.innerText = option;
-    // On pre-submission, set the button to have a transparent background and purple border when selected
+    // Pre-submission: remove any dynamic classes and reset border
     button.classList.remove('selected', 'correct-final', 'incorrect-final');
+    button.style.border = '2px solid transparent';
     button.onclick = () => selectAnswer(button);
     choicesDiv.appendChild(button);
   });
 
-  // Reset slider and remove any dynamic outline
+  // Reset slider and remove dynamic border classes
   const slider = document.getElementById('year-slider');
   slider.value = slider.min;
-  slider.classList.remove('slider-correct', 'slider-incorrect', 'slider-active');
+  slider.classList.remove('slider-active', 'slider-correct', 'slider-incorrect');
   document.getElementById('year-display').innerText = slider.value;
-
+  
   // Clear previous selection and feedback
   selectedAnswer = null;
   document.getElementById('feedback').innerText = '';
   updateScoreboard();
 }
 
-// Update the displayed slider year when it moves and add active highlight
+// Update slider display as it moves and add active outline
 document.getElementById('year-slider').addEventListener('input', function () {
   document.getElementById('year-display').innerText = this.value;
   this.classList.add('slider-active');
 });
 
-// Record the user's selected answer and style the button with a purple outline
+// Record the user's selected answer and style with purple outline
 function selectAnswer(buttonElement) {
   selectedAnswer = buttonElement.innerText;
   const buttons = document.querySelectorAll('#choices button');
   buttons.forEach(btn => {
     btn.classList.remove('selected');
-    // Reset background to default pre-submission
-    btn.style.backgroundColor = '#3498db';
-    btn.style.color = '#fff';
+    btn.style.border = '2px solid transparent';
   });
-  // Add purple border to indicate current selection
   buttonElement.classList.add('selected');
   buttonElement.style.border = '2px solid purple';
 }
@@ -124,11 +121,11 @@ document.getElementById('submit-btn').addEventListener('click', function () {
     return;
   }
   
-  // Get current guess for year and compute delta
   const sliderYear = parseInt(document.getElementById('year-slider').value, 10);
   let yearDiff = 0;
   let isYearCorrect = false;
   
+  // Determine if correctYear is a number (exact) or an array (range)
   if (typeof currentArtifact.correctYear === 'number') {
     yearDiff = Math.abs(sliderYear - currentArtifact.correctYear);
     isYearCorrect = (yearDiff === 0);
@@ -144,64 +141,43 @@ document.getElementById('submit-btn').addEventListener('click', function () {
     }
   }
   
-  // Scoring Calculation:
-  // Always require correct object. If object correct:
-  // Award 3 points plus yearPoints = max(0, 2 - 0.5 * yearDiff).
-  // If object is incorrect, no points are awarded.
-  let questionScore = 0;
-  let objectIsCorrect = (selectedAnswer === currentArtifact.correctAnswer);
-  if (objectIsCorrect) {
-    questionScore += 3;
-    let yearPoints = Math.max(0, 2 - 0.5 * yearDiff);
-    yearPoints = Math.round(yearPoints * 10) / 10;
-    questionScore += yearPoints;
-  }
+  const objectIsCorrect = (selectedAnswer === currentArtifact.correctAnswer);
+  const isPerfect = objectIsCorrect && isYearCorrect;
   
-  // Check if this submission is final:
-  // If the user has more than one life, and the answer is not perfect, allow a retry.
-  let isPerfect = (objectIsCorrect && isYearCorrect);
+  // First submission: if not perfect and lives > 1, show partial feedback (indicate which parts are correct)
   if (!isPerfect && lives > 1) {
     lives--;
     updateScoreboard();
-    // Provide intermediate feedback: show the correct value details and prompt retry.
-    let interimFeedback = '';
+    let interimFeedback = "";
     if (objectIsCorrect) {
-      interimFeedback += '<span class="feedback-object" style="color:green;">Correct object!</span> ';
+      interimFeedback += '<span class="feedback-object" style="color:green;">Your object answer is correct.</span> ';
     } else {
-      interimFeedback += '<span class="feedback-object" style="color:red;">Incorrect. The correct object is: ' 
-                         + currentArtifact.correctAnswer + '.</span> ';
+      interimFeedback += '<span class="feedback-object" style="color:red;">Your object answer is incorrect.</span> ';
     }
-    if (typeof currentArtifact.correctYear === 'number') {
-      interimFeedback += '<span class="feedback-year">Correct Year: ' + currentArtifact.correctYear + '.</span> ';
-    } else if (Array.isArray(currentArtifact.correctYear)) {
-      interimFeedback += '<span class="feedback-year">Correct Year Range: ' 
-                         + currentArtifact.correctYear[0] + ' - ' + currentArtifact.correctYear[1] + '.</span> ';
-    }
-    interimFeedback += '<span class="feedback-year">Your year guess was off by ' + yearDiff + ' year(s).</span>';
-    interimFeedback += '<br><strong>Try again! Lives remaining: ' + ("♥".repeat(lives)) + '</strong>';
-    
-    // Update slider border based on year guess correctness
-    document.getElementById('year-slider').classList.remove('slider-active');
     if (isYearCorrect) {
-      document.getElementById('year-slider').classList.add('slider-correct');
+      interimFeedback += '<span class="feedback-year" style="color:green;">Your year guess is correct.</span>';
     } else {
-      document.getElementById('year-slider').classList.add('slider-incorrect');
+      interimFeedback += '<span class="feedback-year" style="color:red;">Your year guess is incorrect.</span>';
+    }
+    interimFeedback += '<br><strong>Please try again. Lives remaining: ' + "♥".repeat(lives) + '</strong>';
+    
+    // Update slider border based on current year correctness
+    const sliderEl = document.getElementById('year-slider');
+    sliderEl.classList.remove('slider-active');
+    if (isYearCorrect) {
+      sliderEl.classList.add('slider-correct');
+    } else {
+      sliderEl.classList.add('slider-incorrect');
     }
     
-    // Display interim feedback and let the user try again on the same question.
     document.getElementById('feedback').innerHTML = interimFeedback;
-    return; 
+    return; // Allow retry with remaining life
   }
   
-  // If we're here then either:
-  // - The submission is perfect (object & year correct), or
-  // - This is the final attempt (lives == 1, and after this submission lives will be 0).
-  // Finalize the question.
-  
-  // Disable further submissions on this question.
+  // Final submission (either perfect on first try or final attempt)
   document.getElementById('submit-btn').disabled = true;
   
-  // Final result styling for multiple-choice button
+  // Final multiple-choice styling: mark correct and incorrect answers
   const buttons = document.querySelectorAll('#choices button');
   buttons.forEach(btn => {
     if (btn.innerText === currentArtifact.correctAnswer) {
@@ -213,7 +189,7 @@ document.getElementById('submit-btn').addEventListener('click', function () {
     }
   });
   
-  // Update slider border final state
+  // Final slider styling
   const sliderEl = document.getElementById('year-slider');
   sliderEl.classList.remove('slider-active');
   if (isYearCorrect) {
@@ -222,14 +198,23 @@ document.getElementById('submit-btn').addEventListener('click', function () {
     sliderEl.classList.add('slider-incorrect');
   }
   
-  // Add final submission points if object was incorrect then questionScore remains 0.
-  // Update cumulative score and round count.
+  // Scoring Calculation:
+  // If object is correct, award 3 points.
+  // Additionally, if object is correct, calculate yearPoints = max(0, 2 - 0.5 * yearDiff) (rounded to 1 decimal)
+  let questionScore = 0;
+  if (objectIsCorrect) {
+    questionScore += 3;
+    let yearPoints = Math.max(0, 2 - 0.5 * yearDiff);
+    yearPoints = Math.round(yearPoints * 10) / 10;
+    questionScore += yearPoints;
+  }
+  
   score += questionScore;
   roundCount++;
   updateScoreboard();
   
-  // Build detailed final feedback message
-  let feedbackText = '';
+  // Build detailed final feedback message (full details now revealed)
+  let feedbackText = "";
   if (objectIsCorrect) {
     feedbackText += '<span class="feedback-object" style="color:green;">Correct object!</span> ';
   } else {
@@ -252,7 +237,7 @@ document.getElementById('submit-btn').addEventListener('click', function () {
   const feedbackDiv = document.getElementById('feedback');
   feedbackDiv.innerHTML = feedbackText;
   
-  // Apply visual flash on main content
+  // Apply visual flash on the main content accordingly
   const mainContent = document.getElementById('main-content');
   if (objectIsCorrect && isYearCorrect) {
     mainContent.classList.add('flash-correct');
@@ -263,10 +248,7 @@ document.getElementById('submit-btn').addEventListener('click', function () {
     mainContent.classList.remove('flash-correct', 'flash-incorrect');
   }, 500);
   
-  // Re-enable the submit button for the next question (just in case)
-  document.getElementById('submit-btn').disabled = true; // Final submission, disable button
-  
-  // Either show Next Question button or, if 5 rounds complete, show final score summary
+  // End of question: if 5 rounds complete, show score summary; else show "Next Question" button.
   if (roundCount >= 5) {
     setTimeout(() => { showScore(); }, 500);
   } else {
@@ -275,7 +257,6 @@ document.getElementById('submit-btn').addEventListener('click', function () {
     nextButton.id = 'next-btn';
     nextButton.style.marginTop = '20px';
     nextButton.onclick = function () {
-      // Re-enable submit button for next question.
       document.getElementById('submit-btn').disabled = false;
       nextButton.remove();
       loadNewArtifact();
@@ -285,7 +266,7 @@ document.getElementById('submit-btn').addEventListener('click', function () {
   }
 });
 
-// Display score summary after 5 rounds and offer to play again
+// Display final score summary after 5 rounds and provide a "Play Again" option
 function showScore() {
   document.getElementById('main-content').style.display = 'none';
   document.getElementById('scoreboard').style.display = 'none';
@@ -297,7 +278,6 @@ function showScore() {
     <p>You completed ${roundCount} rounds.</p>
     <button id="play-again">Play Again</button>
   `;
-  // Celebrate with a confetti effect or similar (additional enhancements can be added later)
   document.getElementById('play-again').onclick = function () {
     roundCount = 0;
     score = 0;
