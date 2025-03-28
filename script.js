@@ -1,20 +1,29 @@
+// ================== Attempt Background Music Playback on Load ==================
+document.addEventListener("DOMContentLoaded", function () {
+  const music = document.getElementById('background-music');
+  music.play().catch(err => {
+    console.log("Autoplay failed: ", err);
+  });
+});
+
 // ================== Home Screen & Volume Control Setup ==================
 
 // Switch from Home to Game screen when Play button is clicked
 document.getElementById('play-button').addEventListener('click', function () {
   document.getElementById('home-screen').style.display = 'none';
   document.getElementById('game-screen').style.display = 'block';
+  // Note: Do not tie music.play() here; it is handled on DOMContentLoaded.
 });
 
-// Volume Control Setup: Initialize background music and controls
+// Volume Control Setup
 const music = document.getElementById('background-music');
-music.volume = 1; // initial volume 100%
+music.volume = 1; // initial volume = 100%
 
 const volumeButton = document.getElementById('volume-button');
 const volumeSlider = document.getElementById('volume-slider');
 
 function updateVolume() {
-  let vol = volumeSlider.value / 100; // percentage to decimal
+  let vol = volumeSlider.value / 100; // convert percentage to decimal
   music.volume = vol;
   if (vol == 0) {
     volumeButton.innerText = "🔇";
@@ -38,7 +47,6 @@ volumeButton.addEventListener('click', function () {
 
 // ================== Main Game Logic ==================
 
-// Global data & session variables
 let artifacts = [];
 let currentArtifact = null;
 let selectedAnswer = null;
@@ -46,7 +54,7 @@ let selectedAnswer = null;
 let roundCount = 0;
 let score = 0;
 let lives = 2;
-let usedQuestions = [];  // persists across sessions within the visit
+let usedQuestions = [];  // persists across sessions during the visit
 
 let scale = 1;
 const MIN_SCALE = 1;
@@ -61,7 +69,7 @@ function shuffle(array) {
   return array;
 }
 
-// Update scoreboard including lives display
+// Update Scoreboard (round, score, and lives)
 function updateScoreboard() {
   document.getElementById('round-display').innerText = roundCount;
   document.getElementById('score-display').innerText = score;
@@ -106,7 +114,7 @@ function loadNewArtifact() {
   artifactImage.src = currentArtifact.imageURL;
   artifactImage.alt = currentArtifact.correctAnswer;
 
-  // Generate MC options (shuffled)
+  // Generate multiple-choice options (shuffled)
   const options = shuffle([currentArtifact.correctAnswer, ...currentArtifact.distractors]);
   const choicesDiv = document.getElementById('choices');
   choicesDiv.innerHTML = '';
@@ -119,7 +127,7 @@ function loadNewArtifact() {
     choicesDiv.appendChild(button);
   });
 
-  // Reset slider and remove dynamic border classes
+  // Reset slider and its display/classes
   const slider = document.getElementById('year-slider');
   slider.value = slider.min;
   slider.classList.remove('slider-active', 'slider-correct', 'slider-incorrect');
@@ -130,13 +138,13 @@ function loadNewArtifact() {
   updateScoreboard();
 }
 
-// Update slider live with active border styling
+// Update slider display live and add active border
 document.getElementById('year-slider').addEventListener('input', function () {
   document.getElementById('year-display').innerText = this.value;
   this.classList.add('slider-active');
 });
 
-// Record the user's selected answer and indicate selection with purple outline
+// Record the selected answer and highlight with a purple border
 function selectAnswer(buttonElement) {
   selectedAnswer = buttonElement.innerText;
   const buttons = document.querySelectorAll('#choices button');
@@ -176,8 +184,7 @@ document.getElementById('submit-btn').addEventListener('click', function () {
   const objectIsCorrect = (selectedAnswer === currentArtifact.correctAnswer);
   const isPerfect = objectIsCorrect && isYearCorrect;
   
-  // On first submission (if not perfect and lives > 1), provide partial feedback:
-  // Tell the user which part(s) are correct (object and/or year), without revealing correct year/delta details.
+  // On first submission (if not perfect and lives remain), provide partial feedback:
   if (!isPerfect && lives > 1) {
     lives--;
     updateScoreboard();
@@ -206,10 +213,10 @@ document.getElementById('submit-btn').addEventListener('click', function () {
     return;
   }
   
-  // Final submission: disable further submissions.
+  // Final submission: disable the submit button
   document.getElementById('submit-btn').disabled = true;
   
-  // Finalize multiple-choice styling: mark correct answer green and wrong selection red.
+  // Finalize multiple-choice styles
   const buttons = document.querySelectorAll('#choices button');
   buttons.forEach(btn => {
     if (btn.innerText === currentArtifact.correctAnswer) {
@@ -229,8 +236,7 @@ document.getElementById('submit-btn').addEventListener('click', function () {
     sliderEl.classList.add('slider-incorrect');
   }
   
-  // Scoring Calculation:
-  // If the object is correct, award 3 points, and if so, add year points equal to max(0, 2 - 0.5 * yearDiff) (rounded to one decimal).
+  // Scoring: if object is correct, +3 points, and if so, yearPoints = max(0, 2 - 0.5 * yearDiff), rounded to one decimal.
   let questionScore = 0;
   if (objectIsCorrect) {
     questionScore += 3;
@@ -243,7 +249,7 @@ document.getElementById('submit-btn').addEventListener('click', function () {
   roundCount++;
   updateScoreboard();
   
-  // Build full detailed feedback message for final submission.
+  // Build detailed feedback for final submission:
   let feedbackText = "";
   if (objectIsCorrect) {
     feedbackText += '<span class="feedback-object" style="color:green;">Correct object!</span> ';
@@ -298,7 +304,7 @@ document.getElementById('submit-btn').addEventListener('click', function () {
   }
 });
 
-// Display full score summary after 5 rounds with celebratory styling and a "Play Again" option.
+// Show score summary after 5 rounds with celebratory styling and a Play Again button.
 function showScore() {
   document.getElementById('main-content').style.display = 'none';
   document.getElementById('scoreboard').style.display = 'none';
@@ -311,7 +317,7 @@ function showScore() {
     <button id="play-again">Play Again</button>
   `;
   document.getElementById('play-again').onclick = function () {
-    // Do not reset usedQuestions to minimize repeats across sessions.
+    // Do not reset usedQuestions to minimize repeats
     roundCount = 0;
     score = 0;
     updateScoreboard();
@@ -333,4 +339,10 @@ document.getElementById('artifact-container').addEventListener('wheel', function
   const originX = (offsetX / rect.width) * 100;
   const originY = (offsetY / rect.height) * 100;
   img.style.transformOrigin = `${originX}% ${originY}%`;
-  if (e.deltaY
+  if (e.deltaY < 0) {
+    scale = Math.min(scale + 0.1, MAX_SCALE);
+  } else {
+    scale = Math.max(scale - 0.1, MIN_SCALE);
+  }
+  img.style.transform = `scale(${scale})`;
+});
