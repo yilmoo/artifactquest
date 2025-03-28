@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <!-- Home/Landing Page -->
+  <!-- Home / Landing Page -->
   <div id="home-screen">
     <header>
       <h1>Welcome to ArtifactQuest!</h1>
@@ -15,9 +15,8 @@
     <div id="home-content">
       <p>
         Select the correct object and adjust the slider to guess the right time period.<br>
-        You have <strong>2 lives</strong> per question. On your first try, you'll learn which part (object and/or year) is correct without revealing full details; on your final attempt, full feedback will be given.<br>
-        Complete 5 rounds for your final score.<br>
-        Good luck!
+        You have <strong>2 lives</strong> per question – on your first try you'll learn which parts (object and/or year) are correct (without full details), and on your final attempt the complete feedback will be displayed.<br>
+        Complete 5 rounds for your final score. Good luck!
       </p>
       <button id="play-button">Play</button>
     </div>
@@ -30,29 +29,29 @@
   </div>
 
   <!-- Game Screen -->
-  <div id="game-screen" style="display: none;">
+  <div id="game-screen" style="display:none;">
     <header>
       <h1>ArtifactQuest</h1>
     </header>
     
     <div id="instructions">
       <p>
-        You have <strong>2 lives</strong> per question. Your first attempt will only indicate what’s correct, and your final attempt will reveal full details.<br>
+        You have <strong>2 lives</strong> per question. Your first submission will indicate which parts (object and/or year) are correct without full details. On your final try, you'll see complete feedback (including a message in red if your year guess was incorrect).<br>
         Complete 5 rounds for your final score.
       </p>
     </div>
     
     <div id="scoreboard">
       <p>
-        Round: <span id="round-display">0</span> / 5 |
-        Score: <span id="score-display">0</span> |
-        Lives: <span id="lives-display">♥♥</span>
+        Round: <span id="round-display">0</span> / 5
+        | Score: <span id="score-display">0</span>
+        | Lives: <span id="lives-display">♥♥</span>
       </p>
     </div>
 
     <div id="loading">Loading...</div>
 
-    <main id="main-content" style="display: none;">
+    <main id="main-content" style="display:none;">
       <div id="artifact-container">
         <img id="artifact-image" src="" alt="Artifact Image">
       </div>
@@ -93,13 +92,13 @@
     </footer>
   </div>
 
-  <!-- Volume Control: Persistent Speaker Icon with Volume Slider -->
+  <!-- Volume Control: Speaker Icon that reveals a Volume Slider on Hover -->
   <div id="volume-control">
     <button id="volume-button">🔊</button>
     <input type="range" id="volume-slider" min="0" max="100" value="100">
   </div>
 
-  <!-- Background Music -->
+  <!-- Background Music (ensure background-music.mp3 is in the audio/ folder) -->
   <audio id="background-music" autoplay loop>
     <source src="audio/background-music.mp3" type="audio/mpeg">
     Your browser does not support the audio element.
