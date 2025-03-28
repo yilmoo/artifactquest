@@ -110,7 +110,7 @@ header h1 {
   transform: scale(1.05);
 }
 
-/* Slider Container & Tick Marks */
+/* Slider Container & Custom Tick Marks */
 .slider-container {
   position: relative;
   width: 80%;
@@ -122,7 +122,7 @@ header h1 {
 }
 #slider-ticks {
   position: absolute;
-  top: 30px; /* Position below the slider */
+  top: 30px; /* Adjust as needed to position tick labels beneath the slider */
   left: 0;
   width: 100%;
 }
@@ -141,7 +141,7 @@ header h1 {
   margin: 0 auto 2px auto;
 }
 
-/* Slider Section (adjusted for our container) */
+/* Slider Section */
 #time-container {
   margin: 20px 0;
 }
