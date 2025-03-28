@@ -1,1 +1,136 @@
+/* Global Styles */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  text-align: center;
+  margin: 0;
+  padding: 20px;
+  background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+  color: #333;
+}
+
+/* Header & Footer */
+header, footer {
+  background-color: #2c3e50;
+  color: #ecf0f1;
+  padding: 15px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+header h1 {
+  margin: 0;
+}
+
+/* Artifact Display */
+#artifact-container {
+  margin: 20px auto;
+  max-width: 500px;
+  overflow: hidden;
+}
+#artifact-image {
+  width: 100%;
+  height: auto;
+  border: 3px solid #ecf0f1;
+  border-radius: 8px;
+  object-fit: contain;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-out;
+}
+
+/* Multiple-Choice Options */
+#choice-container {
+  margin: 20px 0;
+}
+#choices {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+#choices button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  border: none;
+  border-radius: 8px;
+  background-color: #3498db;
+  color: #fff;
+  transition: background-color 0.3s, transform 0.2s;
+}
+#choices button:hover {
+  background-color: #2980b9;
+  transform: scale(1.05);
+}
+
+/* Slider Section with Enhanced Styling */
+#time-container {
+  margin: 20px 0;
+}
+#year-slider {
+  -webkit-appearance: none;
+  width: 80%;
+  max-width: 400px;
+  margin: 10px 0;
+  background: transparent;
+}
+#year-slider:focus {
+  outline: none;
+}
+#year-slider::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 8px;
+  background: #ddd;
+  border-radius: 4px;
+}
+#year-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 20px;
+  width: 20px;
+  margin-top: -6px;
+  background: #27ae60;
+  border: 2px solid #1e8449;
+  border-radius: 50%;
+  transition: background 0.3s;
+}
+#year-slider::-webkit-slider-thumb:hover {
+  background: #1e8449;
+}
+#year-slider::-moz-range-track {
+  width: 100%;
+  height: 8px;
+  background: #ddd;
+  border-radius: 4px;
+}
+#year-slider::-moz-range-thumb {
+  height: 20px;
+  width: 20px;
+  background: #27ae60;
+  border: 2px solid #1e8449;
+  border-radius: 50%;
+  transition: background 0.3s;
+}
+#year-slider::-moz-range-thumb:hover {
+  background: #1e8449;
+}
+
+/* Submit Button */
+#submit-btn {
+  padding: 12px 25px;
+  font-size: 1rem;
+  margin: 20px;
+  cursor: pointer;
+  border: none;
+  border-radius: 8px;
+  background-color: #27ae60;
+  color: white;
+  transition: background-color 0.3s;
+}
+#submit-btn:hover {
+  background-color: #1e8449;
+}
+
+/* Feedback Section */
+#feedback {
+  margin-top: 20px;
+  font-size: 1.2rem;
+  min-height: 40px;
+}
 
