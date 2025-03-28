@@ -1,1 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ArtifactQuest - Game Settings</title>
+  <link rel="stylesheet" href="styles.css">
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const noTimerRadio = document.getElementById('noTimer');
+      const timeLimitRadio = document.getElementById('timeLimit');
+      const timeLimitContainer = document.getElementById('time-limit-container');
+      noTimerRadio.addEventListener('change', function() {
+        if (this.checked) {
+          timeLimitContainer.style.display = 'none';
+        }
+      });
+      timeLimitRadio.addEventListener('change', function() {
+        if (this.checked) {
+          timeLimitContainer.style.display = 'block';
+        }
+      });
+    });
+
+    function startGame() {
+      const timerOption = document.querySelector('input[name="timer"]:checked').value;
+      localStorage.setItem("timerOption", timerOption);
+      if (timerOption === "timeLimit") {
+        const timeValue = document.getElementById('time-slider').value;
+        localStorage.setItem("timeLimitValue", timeValue);
+      } else {
+        localStorage.removeItem("timeLimitValue");
+      }
+      // Initialize game state
+      localStorage.setItem("score", "0");
+      localStorage.setItem("roundCount", "0");
+      localStorage.setItem("usedQuestions", JSON.stringify([]));
+      // Navigate to first round page
+      window.location.href = "roundone.html?referrer=true";
+    }
+  </script>
+</head>
+<body>
+  <header class="home-header">
+    <h1>Game Settings</h1>
+  </header>
+  <div id="settings-content">
+    <p>Choose your game mode:</p>
+    <div>
+      <input type="radio" id="noTimer" name="timer" value="noTimer" checked>
+      <label for="noTimer">No Timer</label>
+    </div>
+    <div>
+      <input type="radio" id="timeLimit" name="timer" value="timeLimit">
+      <label for="timeLimit">Time Limit</label>
+    </div>
+    <div id="time-limit-container" style="display: none;">
+      <label for="time-slider">Select Time Limit (seconds):</label>
+      <input type="range" id="time-slider" min="30" max="600" value="90" step="10" oninput="document.getElementById('time-display').innerText = this.value;">
+      <span id="time-display">90</span> seconds
+    </div>
+    <button onclick="startGame()">Start Game</button>
+  </div>
+  <footer>
+    <p>
+      Have an artifact to share?
+      <a href="https://forms.gle/KP5EiBE2wDdk8L6D6k" target="_blank">Submit it here</a>
+    </p>
+  </footer>
+</body>
+</html>
 
